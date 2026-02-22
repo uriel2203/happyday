@@ -1,6 +1,8 @@
 {
     "version": 2,
     "framework": null,
+    "installCommand": "echo 'Skipping Node Install'",
+    "buildCommand": "echo 'Skipping Node Build'",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.7.1"
