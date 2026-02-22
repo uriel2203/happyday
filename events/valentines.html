@@ -31,6 +31,10 @@
             color: #ff4d6d;
             animation: floatHeart 6s linear infinite;
             font-size: 2rem;
+            pointer-events: none;
+            user-select: none;
+            will-change: transform, opacity;
+            z-index: 200;
         }
 
         @keyframes floatHeart {
@@ -236,51 +240,57 @@
             valImg.classList.add('w-72', 'max-w-full', 'md:w-96');
             noBtn.style.display = 'none';
             yesBtn.classList.add('hidden');
-            // Explosion effect
-            for (let i = 0; i < 150; i++) {
-                const h = document.createElement('div');
-                h.innerHTML = ['💖', '💕', '💗', '💓', '💞'][Math.floor(Math.random() * 5)];
-                h.style.position = 'fixed';
-                h.style.left = '50%';
-                h.style.top = '50%';
-                h.style.fontSize = Math.random() * 2 + 1 + 'rem';
-                h.style.zIndex = '200';
-                h.style.pointerEvents = 'none';
-                document.body.appendChild(h);
-                gsap.to(h, {
-                    x: (Math.random() - 0.5) * window.innerWidth * 1.5,
-                    y: (Math.random() - 0.5) * window.innerHeight * 1.5,
-                    opacity: 0,
-                    rotation: Math.random() * 720,
-                    scale: Math.random() * 3 + 1,
-                    duration: 3 + Math.random() * 2,
-                    ease: "power4.out",
-                    onComplete: () => h.remove()
-                });
-            }
-
-            // Continuous Flood for 4 seconds
-            const floodInterval = setInterval(() => {
-                for (let i = 0; i < 8; i++) {
+            // Optimized Explosion effect
+            const emojis = ['💖', '💕', '💗', '💓', '💞'];
+            const createExplosion = (count) => {
+                for (let i = 0; i < count; i++) {
                     const h = document.createElement('div');
-                    h.innerHTML = ['💖', '💕', '💗', '💓', '💞'][Math.floor(Math.random() * 5)];
-                    h.style.position = 'fixed';
+                    h.className = 'heart';
+                    h.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                    h.style.left = '50%';
+                    h.style.top = '50%';
+                    h.style.fontSize = Math.random() * 1.5 + 1 + 'rem';
+                    document.body.appendChild(h);
+
+                    gsap.to(h, {
+                        x: (Math.random() - 0.5) * window.innerWidth * 1.2,
+                        y: (Math.random() - 0.5) * window.innerHeight * 1.2,
+                        opacity: 0,
+                        rotation: Math.random() * 360,
+                        scale: Math.random() * 2 + 1,
+                        duration: 2 + Math.random() * 1.5,
+                        ease: "power2.out",
+                        onComplete: () => h.remove()
+                    });
+                }
+            };
+
+            // Phase the explosion to prevent frame drop
+            createExplosion(40);
+            setTimeout(() => createExplosion(40), 100);
+
+            // Optimized Continuous Flood (reduced frequency and density)
+            const floodInterval = setInterval(() => {
+                for (let i = 0; i < 3; i++) {
+                    const h = document.createElement('div');
+                    h.className = 'heart';
+                    h.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
                     h.style.left = Math.random() * 100 + 'vw';
                     h.style.top = window.innerHeight + 50 + 'px';
-                    h.style.fontSize = Math.random() * 2 + 1 + 'rem';
-                    h.style.zIndex = '200';
-                    h.style.pointerEvents = 'none';
+                    h.style.fontSize = Math.random() * 1.5 + 1 + 'rem';
                     document.body.appendChild(h);
+
                     gsap.to(h, {
                         y: -100,
-                        x: "+=" + (Math.random() - 0.5) * 200,
-                        rotation: Math.random() * 360,
-                        duration: 3 + Math.random() * 2,
+                        x: "+=" + (Math.random() - 0.5) * 150,
+                        rotation: Math.random() * 180,
+                        opacity: 0.2, // Fade out as they rise
+                        duration: 4 + Math.random() * 2,
                         ease: "none",
                         onComplete: () => h.remove()
                     });
                 }
-            }, 100);
+            }, 250);
             setTimeout(() => clearInterval(floodInterval), 4000);
         });
 
