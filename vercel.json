@@ -1,38 +1,9 @@
 {
     "version": 2,
-    "framework": null,
+    "framework": "vite",
     "installCommand": "npm install",
     "buildCommand": "npm run build",
-    "outputDirectory": "public",
-    "functions": {
-        "api/index.php": {
-            "runtime": "vercel-php@0.7.3"
-        }
-    },
-    "routes": [
-        {
-            "handle": "filesystem"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/api/index.php"
-        }
-    ],
-    "env": {
-        "APP_NAME": "HappyDay",
-        "APP_ENV": "production",
-        "APP_DEBUG": "false",
-        "APP_URL": "https://happyday-vert.vercel.app",
-        "APP_KEY": "base64:kmEqBTgtna88WEdUN08O8lWi9ePlExs81hDCdHoMImE=",
-        "LOG_CHANNEL": "stderr",
-        "DB_CONNECTION": "sqlite",
-        "DB_DATABASE": ":memory:",
-        "SESSION_DRIVER": "cookie",
-        "CACHE_STORE": "array",
-        "FILESYSTEM_DISK": "public",
-        "APP_CONFIG_CACHE": "/tmp/config.php",
-        "APP_EVENTS_CACHE": "/tmp/events.php",
-        "APP_ROUTES_CACHE": "/tmp/routes.php",
-        "VIEW_COMPILED_PATH": "/tmp/views"
-    }
+    "outputDirectory": "dist",
+    "cleanUrls": true,
+    "trailingSlash": false
 }

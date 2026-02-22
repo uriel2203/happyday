@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merry Christmas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="/src/style.css">
+    <style>
+        body {
+            background-color: #0f172a;
+        }
+
+        .bg-winter {
+            background: linear-gradient(180deg, #020617 0%, #172554 40%, #1e3a8a 80%, #93c5fd 100%);
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10vh;
+            color: white;
+            font-size: 1.5em;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            user-select: none;
+            z-index: 1000;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) translateX(0) scale(1) rotate(0);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(110vh) translateX(50px) scale(0.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .lights-container {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .bulb {
+            width: 15px;
+            height: 30px;
+            border-radius: 50%;
+            margin-top: -10px;
+            position: relative;
+            animation: flash 1s alternate infinite;
+        }
+
+        .bulb::before {
+            content: "";
+            position: absolute;
+            background: #111;
+            width: 6px;
+            height: 10px;
+            border-radius: 2px;
+            top: -8px;
+            left: 5px;
+        }
+
+        .bulb:nth-child(odd) {
+            background: #ef4444;
+            animation-delay: 0.5s;
+        }
+
+        .bulb:nth-child(even) {
+            background: #efc344;
+            animation-delay: 0s;
+        }
+
+        @keyframes flash {
+            0% {
+                opacity: 0.5;
+                box-shadow: 0 0 5px currentColor;
+            }
+
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 20px currentColor;
+            }
+        }
+
+        .sleigh {
+            position: fixed;
+            top: 20%;
+            left: -20%;
+            font-size: 4rem;
+            z-index: 40;
+            animation: flySleigh 15s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes flySleigh {
+            0% {
+                transform: translateX(0) translateY(0) scale(0.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(120vw) translateY(-20vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .gift-box {
+            transition: all 0.3s ease;
+        }
+
+        .gift-box:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 20px #ef4444);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-500 overflow-x-hidden min-h-screen flex flex-col">
+    <nav class="fixed top-0 w-full z-50 p-4 flex justify-between items-center mix-blend-difference text-white">
+        <a href="/" class="text-2xl font-bold tracking-wider hover:scale-105 transition-transform">HappyDay</a>
+        <div class="flex gap-4">
+            <button id="bgm-toggle"
+                class="p-1.5 rounded-full glass hover:bg-white/20 transition cursor-pointer relative z-10 text-sm">🔇</button>
+            <button id="theme-toggle"
+                class="p-2 rounded-full glass hover:bg-white/20 transition cursor-pointer">🌓</button>
+        </div>
+    </nav>
+    <audio id="bgm-audio" loop autoplay muted src="/images/christmas.mp3"></audio>
+
+    <main class="flex-grow flex relative w-full h-full">
+        <div class="fixed inset-0 bg-winter z-0"></div>
+        <div class="fixed inset-0 overflow-hidden pointer-events-none z-10" id="snow-layer"></div>
+        <div class="lights-container w-full" id="lights"></div>
+        <div class="sleigh">🎅🛷🦌🦌🦌</div>
+
+        <div
+            class="relative z-20 w-full min-h-screen flex flex-col items-center justify-center p-6 text-center text-white">
+            <div class="mb-8 mt-16 group cursor-pointer" id="present-btn">
+                <h1
+                    class="text-6xl md:text-8xl font-black bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-yellow-300 to-green-500 mb-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] filter">
+                    Merry Christmas</h1>
+                <p class="text-xl md:text-3xl text-blue-100 font-serif italic max-w-2xl mx-auto tracking-wide mb-12">
+                    "May your days be merry and bright."</p>
+                <div
+                    class="relative w-48 h-48 mx-auto mt-8 perspective-1000 transform transition-transform duration-500 hover:rotate-3">
+                    <div class="absolute inset-0 bg-red-600 rounded-lg shadow-2xl border-4 border-red-800 flex items-center justify-center gift-box overflow-hidden"
+                        id="present-base">
+                        <div class="absolute w-full h-8 bg-yellow-400 opacity-90 shadow-sm top-1/2 -translate-y-1/2">
+                        </div>
+                        <div class="absolute h-full w-8 bg-yellow-400 opacity-90 shadow-sm left-1/2 -translate-x-1/2">
+                        </div>
+                        <div
+                            class="absolute w-12 h-12 border-4 border-yellow-400 rounded-full top-2 left-1/2 -translate-x-[110%] ml-4 bg-red-600">
+                        </div>
+                        <div
+                            class="absolute w-12 h-12 border-4 border-yellow-400 rounded-full top-2 right-1/2 translate-x-[110%] mr-4 bg-red-600">
+                        </div>
+                        <span
+                            class="z-10 text-xl font-bold text-red-900 mt-2 bg-yellow-200/90 px-3 py-1 rounded-sm shadow-md animate-pulse">Open
+                            Present</span>
+                    </div>
+                </div>
+            </div>
+            <div id="christmas-msg"
+                class="glass hidden mt-12 p-8 rounded-3xl w-full max-w-2xl text-center bg-red-900/60 shadow-2xl border border-red-500/30 backdrop-blur-md opacity-0 scale-50 transition-all duration-700">
+                <h2
+                    class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-200 to-yellow-500 mb-4 font-serif">
+                    Warmest Greetings</h2>
+                <p class="text-xl text-red-100 font-light leading-relaxed">Wishing you a magical holiday season filled
+                    with joy, love, and laughter. May the upcoming year bring you prosperity and peace!</p>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => document.documentElement.classList.toggle('dark'));
+        const bgmAudio = document.getElementById('bgm-audio');
+        const bgmToggle = document.getElementById('bgm-toggle');
+        bgmAudio.volume = 0.5;
+        const unlockAudio = () => {
+            bgmAudio.muted = false; bgmAudio.play().then(() => {
+                bgmToggle.innerText = '🔊';
+                ['click', 'touchstart', 'keydown'].forEach(ev => window.removeEventListener(ev, unlockAudio));
+            }).catch(e => { });
+        };
+        ['click', 'touchstart', 'keydown'].forEach(ev => window.addEventListener(ev, unlockAudio));
+        bgmToggle.addEventListener('click', () => {
+            if (bgmAudio.muted || bgmAudio.paused) { bgmAudio.muted = false; bgmAudio.play(); bgmToggle.innerText = '🔊'; }
+            else { bgmAudio.muted = true; bgmToggle.innerText = '🔇'; }
+        });
+
+        const snowLayer = document.getElementById('snow-layer');
+        const flakeChars = ['❄', '❆', '❅', '♦'];
+        setInterval(() => {
+            const f = document.createElement('div'); f.classList.add('snowflake'); f.innerText = flakeChars[Math.floor(Math.random() * flakeChars.length)];
+            f.style.left = Math.random() * 100 + 'vw'; f.style.animationDuration = Math.random() * 5 + 5 + 's'; f.style.opacity = Math.random();
+            snowLayer.appendChild(f); setTimeout(() => f.remove(), 10000);
+        }, 200);
+
+        const lights = document.getElementById('lights');
+        for (let i = 0; i < 40; i++) {
+            const b = document.createElement('div'); b.classList.add('bulb'); b.style.marginLeft = Math.floor(Math.random() * 20 + 10) + 'px';
+            lights.appendChild(b);
+        }
+
+        const presentBtn = document.getElementById('present-btn');
+        const presentBase = document.getElementById('present-base');
+        const msg = document.getElementById('christmas-msg');
+        presentBtn.addEventListener('click', () => {
+            if (!msg.classList.contains('hidden')) return;
+            gsap.to(presentBase, { x: 10, duration: 0.1, yoyo: true, repeat: 5 });
+            setTimeout(() => {
+                gsap.to(presentBase, { y: -500, scale: 0, opacity: 0, rotation: 180, duration: 1, ease: "power2.in" });
+                msg.classList.remove('hidden');
+                setTimeout(() => {
+                    msg.classList.remove('opacity-0', 'scale-50'); msg.classList.add('opacity-100', 'scale-100');
+                    confetti({ particleCount: 200, spread: 120, origin: { y: 0.5 }, colors: ['#ef4444', '#10b981', '#f59e0b'] });
+                }, 500);
+            }, 600);
+        });
+    </script>
+</body>
+
+</html>
