@@ -24,8 +24,9 @@
         }
     ],
     "env": {
+        "APP_NAME": "HappyDay",
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
+        "APP_DEBUG": "true",
         "APP_KEY": "base64:kmEqBTgtna88WEdUN08O8lWi9ePlExs81hDCdHoMImE=",
         "WEB_KEY": "base64:kmEqBTgtna88WEdUN08O8lWi9ePlExs81hDCdHoMImE=",
         "LOG_CHANNEL": "stderr",

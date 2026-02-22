@@ -1,25 +1,44 @@
 <?php
 
 /**
- * Vercel Entry Point
+ * Vercel Entry Point - Diagnostic Version
  */
 
-// 1. Map custom WEB_KEY to required APP_KEY
-$webKey = getenv('WEB_KEY') ?: ($_ENV['WEB_KEY'] ?? ($_SERVER['WEB_KEY'] ?? null));
+// 1. Hard Error Reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-if ($webKey) {
-    putenv("APP_KEY=$webKey");
-    $_ENV['APP_KEY'] = $webKey;
-    $_SERVER['APP_KEY'] = $webKey;
-}
-
-// 2. Vercel Storage Fix
-if (getenv('VERCEL')) {
-    putenv('VIEW_COMPILED_PATH=/tmp/views');
-    if (!is_dir('/tmp/views')) {
-        @mkdir('/tmp/views', 0755, true);
+try {
+    // 2. Map Keys
+    $appKey = getenv('APP_KEY') ?: getenv('WEB_KEY') ?: ($_ENV['APP_KEY'] ?? ($_SESSION['APP_KEY'] ?? null));
+    if ($appKey) {
+        putenv("APP_KEY=$appKey");
+        $_ENV['APP_KEY'] = $appKey;
     }
-}
 
-// 3. Forward to Laravel
-require __DIR__ . '/../public/index.php';
+    // 3. Environment Fixes
+    if (getenv('VERCEL')) {
+        putenv('VIEW_COMPILED_PATH=/tmp/views');
+        if (!is_dir('/tmp/views')) {
+            @mkdir('/tmp/views', 0755, true);
+        }
+    }
+
+    // 4. Load Autoloader & Bootstrap
+    if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
+        throw new \Exception("Vercel Error: Vendor directory not found. Please check deployment logs.");
+    }
+
+    // 5. Hand over to public/index.php (The standard Laravel entry)
+    require __DIR__ . '/../public/index.php';
+
+} catch (\Throwable $e) {
+    http_response_code(500);
+    echo "<div style='font-family: sans-serif; padding: 20px; background: #fff; border: 5px solid red;'>";
+    echo "<h1>Vercel Deployment Diagnostic</h1>";
+    echo "<p><strong>Error:</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
+    echo "<p><strong>File:</strong> " . $e->getFile() . " on line " . $e->getLine() . "</p>";
+    echo "<pre>" . $e->getTraceAsString() . "</pre>";
+    echo "</div>";
+}
