@@ -2,11 +2,10 @@
     "version": 2,
     "framework": null,
     "installCommand": "npm install",
-    "buildCommand": "npm run build && mkdir -p dist && cp -rf api bootstrap config database public resources routes storage vendor artisan composer.json package.json dist/",
-    "outputDirectory": "dist",
+    "buildCommand": "npm run build",
     "functions": {
         "api/index.php": {
-            "runtime": "vercel-php@0.7.2"
+            "runtime": "vercel-php@0.7.3"
         }
     },
     "routes": [
@@ -35,7 +34,7 @@
         "APP_NAME": "HappyDay",
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "https://happy-day.vercel.app",
+        "APP_URL": "https://happyday-vert.vercel.app",
         "APP_KEY": "base64:kmEqBTgtna88WEdUN08O8lWi9ePlExs81hDCdHoMImE=",
         "LOG_CHANNEL": "stderr",
         "DB_CONNECTION": "sqlite",
