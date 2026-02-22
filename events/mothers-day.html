@@ -44,8 +44,18 @@
     <nav class="fixed top-0 w-full z-50 p-4 flex justify-between items-center mix-blend-difference text-white">
         <a href="/" class="text-2xl font-bold tracking-wider hover:scale-105 transition-transform">HappyDay</a>
         <div class="flex gap-4">
-            <button id="bgm-toggle"
-                class="p-1.5 rounded-full glass hover:bg-white/20 transition cursor-pointer relative z-10 text-sm">🔇</button>
+            <div class="relative flex items-center justify-center group">
+                <div id="audio-pulse"
+                    class="absolute inset-0 rounded-full bg-pink-500/30 animate-ping scale-75 pointer-events-none">
+                </div>
+                <button id="bgm-toggle"
+                    class="p-1.5 rounded-full glass hover:bg-white/20 transition cursor-pointer relative z-10 text-sm"
+                    title="Enable Sound">🔇</button>
+                <div id="audio-hint"
+                    class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-pink-600/90 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-1 rounded-full whitespace-nowrap animate-bounce shadow-lg z-20 flex items-center gap-1 border border-white/20">
+                    <span class="text-[10px] inline-block -mt-[1px]">🎵</span> ON
+                </div>
+            </div>
             <button id="theme-toggle"
                 class="p-2 rounded-full glass hover:bg-white/20 transition cursor-pointer">🌓</button>
         </div>
@@ -105,16 +115,41 @@
         const bgmAudio = document.getElementById('bgm-audio');
         const bgmToggle = document.getElementById('bgm-toggle');
         bgmAudio.volume = 0.5;
+        const removeIndicators = () => {
+            const pulse = document.getElementById('audio-pulse');
+            const hint = document.getElementById('audio-hint');
+            if (pulse) pulse.remove();
+            if (hint) hint.remove();
+        };
+
         const unlockAudio = () => {
-            bgmAudio.muted = false; bgmAudio.play().then(() => {
+            bgmAudio.muted = false;
+            bgmAudio.play().then(() => {
                 bgmToggle.innerText = '🔊';
+                bgmToggle.setAttribute('title', 'Mute Music');
+                removeIndicators();
                 ['click', 'touchstart', 'keydown'].forEach(ev => window.removeEventListener(ev, unlockAudio));
             }).catch(e => { });
         };
         ['click', 'touchstart', 'keydown'].forEach(ev => window.addEventListener(ev, unlockAudio));
+
+        bgmAudio.play().then(() => {
+            bgmAudio.muted = false;
+            bgmToggle.innerText = '🔊';
+            removeIndicators();
+        }).catch(e => {
+            bgmToggle.innerText = '🔇';
+        });
+
         bgmToggle.addEventListener('click', () => {
-            if (bgmAudio.muted || bgmAudio.paused) { bgmAudio.muted = false; bgmAudio.play(); bgmToggle.innerText = '🔊'; }
-            else { bgmAudio.muted = true; bgmToggle.innerText = '🔇'; }
+            if (bgmAudio.muted || bgmAudio.paused) {
+                bgmAudio.muted = false; bgmAudio.play(); bgmToggle.innerText = '🔊';
+                bgmToggle.setAttribute('title', 'Mute Music');
+                removeIndicators();
+            } else {
+                bgmAudio.muted = true; bgmToggle.innerText = '🔇';
+                bgmToggle.setAttribute('title', 'Unmute Music');
+            }
         });
 
         const toInput = document.getElementById('card-to'); const msgInput = document.getElementById('card-msg'); const fromInput = document.getElementById('card-from');
