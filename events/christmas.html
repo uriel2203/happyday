@@ -27,6 +27,7 @@
             user-select: none;
             z-index: 1000;
             animation: fall linear infinite;
+            will-change: transform, opacity;
         }
 
         @keyframes fall {
@@ -58,9 +59,9 @@
             width: 15px;
             height: 30px;
             border-radius: 50%;
-            margin-top: -10px;
             position: relative;
-            animation: flash 1s alternate infinite;
+            animation: twinkle 1s infinite alternate;
+            will-change: background-color, box-shadow;
         }
 
         .bulb::before {
@@ -104,6 +105,7 @@
             z-index: 40;
             animation: flySleigh 15s linear infinite;
             pointer-events: none;
+            will-change: transform;
         }
 
         @keyframes flySleigh {
@@ -253,13 +255,15 @@
             const f = document.createElement('div'); f.classList.add('snowflake'); f.innerText = flakeChars[Math.floor(Math.random() * flakeChars.length)];
             f.style.left = Math.random() * 100 + 'vw'; f.style.animationDuration = Math.random() * 5 + 5 + 's'; f.style.opacity = Math.random();
             snowLayer.appendChild(f); setTimeout(() => f.remove(), 10000);
-        }, 200);
+        }, 500);
 
         const lights = document.getElementById('lights');
+        const lightsFrag = document.createDocumentFragment();
         for (let i = 0; i < 40; i++) {
             const b = document.createElement('div'); b.classList.add('bulb'); b.style.marginLeft = Math.floor(Math.random() * 20 + 10) + 'px';
-            lights.appendChild(b);
+            lightsFrag.appendChild(b);
         }
+        lights.appendChild(lightsFrag);
 
         const presentBtn = document.getElementById('present-btn');
         const presentBase = document.getElementById('present-base');

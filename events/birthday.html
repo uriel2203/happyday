@@ -21,6 +21,7 @@
         .flame {
             animation: flicker 1s ease-in-out infinite alternate;
             transform-origin: bottom center;
+            will-change: transform, opacity;
         }
 
         .flame-blown {
@@ -53,6 +54,7 @@
             animation: floatUpBalloon 10s linear infinite;
             opacity: 0.8;
             filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2));
+            will-change: transform;
         }
 
         @keyframes floatUpBalloon {
@@ -191,6 +193,7 @@
 
         const balloonBg = document.getElementById('balloon-bg');
         const balloonColors = ['bg-red-400', 'bg-blue-400', 'bg-green-400', 'bg-yellow-400', 'bg-purple-400', 'bg-pink-400'];
+        const balloonFrag = document.createDocumentFragment();
         for (let i = 0; i < 15; i++) {
             const b = document.createElement('div');
             const color = balloonColors[Math.floor(Math.random() * balloonColors.length)];
@@ -200,8 +203,9 @@
             b.style.animationDelay = Math.random() * 5 + 's';
             const knot = document.createElement('div'); knot.className = `w-4 h-4 mt-24 ml-6 rotate-45 ${color}`; b.appendChild(knot);
             const str = document.createElement('div'); str.className = "w-0.5 h-32 bg-gray-300 ml-8 -mt-2 opacity-50"; b.appendChild(str);
-            balloonBg.appendChild(b);
+            balloonFrag.appendChild(b);
         }
+        balloonBg.appendChild(balloonFrag);
 
         window.blowCandle = () => {
             const flame = document.getElementById('flame');

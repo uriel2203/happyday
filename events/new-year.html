@@ -19,6 +19,7 @@
             border-radius: 50%;
             background-color: white;
             animation: twinkle linear infinite;
+            will-change: transform, opacity;
         }
 
         @keyframes twinkle {
@@ -64,6 +65,7 @@
             bottom: 10%;
             z-index: 100;
             font-size: 2rem;
+            will-change: transform, opacity;
         }
     </style>
 </head>
@@ -205,11 +207,18 @@
         });
 
         const starsLayer = document.getElementById('stars-layer');
+        const fragment = document.createDocumentFragment();
         for (let i = 0; i < 150; i++) {
-            const s = document.createElement('div'); s.classList.add('star'); s.style.width = Math.random() * 3 + 'px'; s.style.height = s.style.width;
-            s.style.left = Math.random() * 100 + 'vw'; s.style.top = Math.random() * 100 + 'vh'; s.style.animationDuration = Math.random() * 3 + 1 + 's';
-            starsLayer.appendChild(s);
+            const s = document.createElement('div');
+            s.className = 'star';
+            s.style.width = Math.random() * 3 + 'px';
+            s.style.height = s.style.width;
+            s.style.left = Math.random() * 100 + 'vw';
+            s.style.top = Math.random() * 100 + 'vh';
+            s.style.animationDuration = Math.random() * 3 + 1 + 's';
+            fragment.appendChild(s);
         }
+        starsLayer.appendChild(fragment);
 
         const currentYear = new Date().getFullYear();
         document.getElementById('current-year').innerText = "Happy " + currentYear;
@@ -230,8 +239,8 @@
         var duration = 15 * 1000; var end = Date.now() + duration;
         var interval = setInterval(function () {
             var timeLeft = end - Date.now(); if (timeLeft <= 0) { return clearInterval(interval); }
-            confetti({ particleCount: 25, origin: { x: Math.random(), y: Math.random() - 0.2 } });
-        }, 250);
+            confetti({ particleCount: 15, origin: { x: Math.random(), y: Math.random() - 0.2 }, ticks: 150 });
+        }, 400);
 
         const wishBtn = document.getElementById('make-wish-btn'); const modal = document.getElementById('wish-modal'); const sendWish = document.getElementById('send-wish');
         wishBtn.addEventListener('click', () => { modal.classList.remove('hidden'); });

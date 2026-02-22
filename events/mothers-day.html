@@ -36,6 +36,7 @@
             top: -20px;
             opacity: 0.8;
             transform-origin: center;
+            will-change: transform, opacity;
         }
     </style>
 </head>
@@ -176,12 +177,27 @@
 
         document.getElementById('send-flower-btn').addEventListener('click', () => {
             const petalColors = ['#f472b6', '#fb7185', '#fbcfe8', '#fda4af'];
-            for (let i = 0; i < 30; i++) {
-                const petal = document.createElement('div'); petal.classList.add('petal'); petal.style.left = Math.random() * 100 + 'vw';
-                petal.style.backgroundColor = petalColors[Math.floor(Math.random() * petalColors.length)];
-                petal.style.width = '15px'; petal.style.height = '30px'; petal.style.borderRadius = '50% 0 50% 0'; petal.style.boxShadow = 'inset 0 0 5px rgba(0,0,0,0.1)';
-                document.body.appendChild(petal);
-                gsap.to(petal, { y: window.innerHeight + 100, x: "+=" + ((Math.random() - 0.5) * 200), rotation: Math.random() * 720, duration: 3 + Math.random() * 3, ease: "sine.inOut", onComplete: () => petal.remove() });
+            const count = 20; // Reduced density for performance
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const petal = document.createElement('div');
+                    petal.classList.add('petal');
+                    petal.style.left = Math.random() * 100 + 'vw';
+                    petal.style.backgroundColor = petalColors[Math.floor(Math.random() * petalColors.length)];
+                    petal.style.width = '15px';
+                    petal.style.height = '30px';
+                    petal.style.borderRadius = '50% 0 50% 0';
+                    petal.style.boxShadow = 'inset 0 0 5px rgba(0,0,0,0.1)';
+                    document.body.appendChild(petal);
+                    gsap.to(petal, {
+                        y: window.innerHeight + 100,
+                        x: "+=" + ((Math.random() - 0.5) * 200),
+                        rotation: Math.random() * 720,
+                        duration: 3 + Math.random() * 3,
+                        ease: "sine.inOut",
+                        onComplete: () => petal.remove()
+                    });
+                }, i * 15); // Stagger petal creation to avoid CPU spike
             }
         });
     </script>
