@@ -16,23 +16,31 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-500 overflow-x-hidden min-h-screen flex flex-col">
     
-    <!-- Navbar / Controls -->
     <nav class="fixed top-0 w-full z-50 p-4 flex justify-between items-center mix-blend-difference text-white">
         <a href="{{ route('home') }}" class="text-2xl font-bold tracking-wider hover:scale-105 transition-transform">
             HappyDay
         </a>
         <div class="flex gap-4">
-            <button id="bgm-toggle" class="p-2 rounded-full glass hover:bg-white/20 transition cursor-pointer" title="Mute/Unmute">🔊</button>
+            <div class="relative flex items-center justify-center group">
+                <!-- Subtler, smaller Pulse -->
+                <div id="audio-pulse" class="absolute inset-0 rounded-full bg-pink-500/30 animate-ping scale-75 pointer-events-none"></div>
+                <!-- Main Button (Smaller padding) -->
+                <button id="bgm-toggle" class="p-1.5 rounded-full glass hover:bg-white/20 transition cursor-pointer relative z-10 text-sm" title="Enable Sound">🔇</button>
+                <!-- Minimal Tooltip (Smaller text and padding) -->
+                <div id="audio-hint" class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-pink-600/90 backdrop-blur-sm text-white text-[9px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap animate-bounce shadow-lg z-20 flex items-center gap-1 border border-white/20">
+                    <span class="scale-75">🎵</span> ON
+                </div>
+            </div>
             <button id="theme-toggle" class="p-2 rounded-full glass hover:bg-white/20 transition cursor-pointer">🌓</button>
         </div>
     </nav>
-    <audio id="bgm-audio" loop autoplay src=""></audio>
+    <audio id="bgm-audio" loop autoplay muted src=""></audio>
 
     <main class="flex-grow flex relative w-full h-full">
         @yield('content')
     </main>
 
-    <div class="fixed bottom-4 right-4 z-50 flex gap-3 flex-col sm:flex-row id='share-buttons'">
+    <div id="share-buttons" class="fixed bottom-4 right-4 z-50 flex gap-3 flex-col sm:flex-row">
         <button onclick="shareAction('twitter')" class="p-3 rounded-full glass hover:bg-[#1DA1F2]/80 hover:scale-110 hover:-translate-y-1 hover:shadow-lg transition-all shadow-[#1DA1F2]/50 text-white">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.054 10.054 0 01-3.127 1.195 4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
         </button>
@@ -60,44 +68,59 @@
         };
 
         const themeToggle = document.getElementById('theme-toggle');
-        themeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-        });
+        if(themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+        }
 
         const bgmAudio = document.getElementById('bgm-audio');
         const bgmToggle = document.getElementById('bgm-toggle');
         
         @if(View::hasSection('audio_src'))
             bgmAudio.src = "@yield('audio_src')";
-            bgmAudio.volume = 0.5; // Set smooth default volume
+            bgmAudio.volume = 0.5;
             
-            // Try explicit immediate play request safely
-            const playAudio = () => {
-                if (!bgmAudio.paused) return; // Prevent overlapping play calls
-                bgmAudio.play().then(() => {
-                    bgmToggle.innerText = '🔊';
-                    // clean up active global triggers once successful
-                    document.body.removeEventListener('click', playAudio);
-                    document.body.removeEventListener('keydown', playAudio);
-                    document.body.removeEventListener('touchstart', playAudio);
-                }).catch(e => {
-                    // Browser blocked explicit autoplay; await first user interaction silently
-                });
+            const removeIndicators = () => {
+                const pulse = document.getElementById('audio-pulse');
+                const hint = document.getElementById('audio-hint');
+                if(pulse) pulse.remove();
+                if(hint) hint.remove();
             };
 
-            // Aggressive but safe triggers that are trusted by browsers (removed mousemove limits)
-            document.body.addEventListener('click', playAudio);
-            document.body.addEventListener('keydown', playAudio);
-            document.body.addEventListener('touchstart', playAudio);
+            const unlockAudio = () => {
+                bgmAudio.muted = false;
+                bgmAudio.play().then(() => {
+                    bgmToggle.innerText = '🔊';
+                    bgmToggle.setAttribute('title', 'Mute Music');
+                    removeIndicators();
+                    ['click', 'touchstart', 'keydown', 'wheel', 'mousedown'].forEach(ev => {
+                        window.removeEventListener(ev, unlockAudio);
+                    });
+                }).catch(e => {});
+            };
 
-            // Initial auto-attempt
-            playAudio();
+            // Use window for better coverage of entire screen
+            ['click', 'touchstart', 'keydown', 'wheel', 'mousedown'].forEach(ev => {
+                window.addEventListener(ev, unlockAudio);
+            });
+
+            // Try initial attempt
+            bgmAudio.play().then(() => {
+                bgmAudio.muted = false;
+                bgmToggle.innerText = '🔊';
+                removeIndicators();
+            }).catch(e => {
+                // Keep icon as muted if blocked
+                bgmToggle.innerText = '🔇';
+            });
             
         @else
+            const indicators = document.querySelectorAll('#audio-pulse, #audio-hint');
+            indicators.forEach(el => el.style.display = 'none');
             bgmToggle.style.display = 'none';
         @endif
         
-        // Manual mute / unmute toggle logic explicitly clicked by user
         bgmToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             if (bgmAudio.muted || bgmAudio.paused) {
