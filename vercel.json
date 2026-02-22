@@ -15,7 +15,7 @@
             "dest": "/public/build/$1"
         },
         {
-            "src": "/(images|favicon.ico|robots.txt)(.*)",
+            "src": "/(css|js|images|image|fonts|lottie|favicon.ico|robots.txt)(.*)",
             "dest": "/public/$1$2"
         },
         {
@@ -25,7 +25,7 @@
     ],
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "true",
+        "APP_DEBUG": "false",
         "APP_KEY": "base64:kmEqBTgtna88WEdUN08O8lWi9ePlExs81hDCdHoMImE=",
         "LOG_CHANNEL": "stderr",
         "DB_CONNECTION": "sqlite",
@@ -34,11 +34,6 @@
         "CACHE_STORE": "array",
         "FILESYSTEM_DISK": "public",
         "LARAVEL_STORAGE_PATH": "/tmp",
-        "VIEW_COMPILED_PATH": "/tmp/views",
-        "APP_PACKAGES_CACHE": "/tmp/packages.php",
-        "APP_SERVICES_CACHE": "/tmp/services.php",
-        "APP_CONFIG_CACHE": "/tmp/config.php",
-        "APP_ROUTES_CACHE": "/tmp/routes.php",
-        "APP_EVENTS_CACHE": "/tmp/events.php"
+        "VIEW_COMPILED_PATH": "/tmp/views"
     }
 }
