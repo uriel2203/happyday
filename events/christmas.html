@@ -187,7 +187,7 @@
                 </div>
             </div>
             <div id="christmas-msg"
-                class="glass hidden mt-12 p-8 rounded-3xl w-full max-w-2xl text-center bg-red-900/60 shadow-2xl border border-red-500/30 backdrop-blur-md opacity-0 scale-50 transition-all duration-700">
+                class="glass hidden p-8 rounded-3xl w-full max-w-2xl text-center bg-red-900/60 shadow-2xl border border-red-500/30 backdrop-blur-md opacity-0 scale-50 transition-all duration-700">
                 <h2
                     class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-200 to-yellow-500 mb-4 font-serif">
                     Warmest Greetings</h2>
@@ -264,14 +264,32 @@
         const presentBtn = document.getElementById('present-btn');
         const presentBase = document.getElementById('present-base');
         const msg = document.getElementById('christmas-msg');
+
+        // References to original text for hiding
+        const christmasTitle = presentBtn.querySelector('h1');
+        const christmasSub = presentBtn.querySelector('p');
+
         presentBtn.addEventListener('click', () => {
             if (!msg.classList.contains('hidden')) return;
+
             gsap.to(presentBase, { x: 10, duration: 0.1, yoyo: true, repeat: 5 });
+
             setTimeout(() => {
-                gsap.to(presentBase, { y: -500, scale: 0, opacity: 0, rotation: 180, duration: 1, ease: "power2.in" });
+                // Fade out initial elements to center the final card
+                gsap.to([christmasTitle, christmasSub, presentBase], {
+                    y: -50,
+                    opacity: 0,
+                    duration: 0.8,
+                    stagger: 0.1,
+                    onComplete: () => {
+                        presentBtn.classList.add('hidden');
+                    }
+                });
+
                 msg.classList.remove('hidden');
                 setTimeout(() => {
-                    msg.classList.remove('opacity-0', 'scale-50'); msg.classList.add('opacity-100', 'scale-100');
+                    msg.classList.remove('opacity-0', 'scale-50');
+                    msg.classList.add('opacity-100', 'scale-100');
                     confetti({ particleCount: 200, spread: 120, origin: { y: 0.5 }, colors: ['#ef4444', '#10b981', '#f59e0b'] });
                 }, 500);
             }, 600);
