@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link rel="stylesheet" href="/src/style.css">
+    <link rel="preload" href="/images/kilig.mp3" as="audio">
     <style>
         body {
             background-color: #4c0519;
@@ -216,8 +217,9 @@
         ['mouseover', 'click'].forEach(ev => noBtn.addEventListener(ev, dodgeNo));
 
         yesBtn.addEventListener('click', () => {
-            // Updated Music to kilig.mp3
+            // Priority 1: Instant Play
             bgmAudio.src = "/images/kilig.mp3";
+            bgmAudio.load(); // Forces immediate switch
             bgmAudio.play().catch(e => { });
 
             valTitle.innerText = "YAY! I love you! 💕";
