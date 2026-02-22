@@ -216,6 +216,10 @@
         ['mouseover', 'click'].forEach(ev => noBtn.addEventListener(ev, dodgeNo));
 
         yesBtn.addEventListener('click', () => {
+            // Updated Music to kilig.mp3
+            bgmAudio.src = "/images/kilig.mp3";
+            bgmAudio.play().catch(e => { });
+
             valTitle.innerText = "YAY! I love you! 💕";
             valImg.src = "/images/6.gif";
             valImg.classList.remove('w-40');
