@@ -1,11 +1,12 @@
 {
     "version": 2,
     "framework": null,
-    "installCommand": "echo 'Skipping Node Install'",
-    "buildCommand": "echo 'Skipping Node Build'",
+    "installCommand": "npm install",
+    "buildCommand": "npm run build",
+    "outputDirectory": ".",
     "functions": {
         "api/index.php": {
-            "runtime": "vercel-php@0.7.1"
+            "runtime": "vercel-php@0.7.2"
         }
     },
     "routes": [
@@ -14,12 +15,38 @@
             "dest": "/public/build/$1"
         },
         {
-            "src": "/(css|js|images|lottie|favicon.ico|robots.txt)/(.*)",
+            "src": "/(css|js|images|image|fonts|lottie)/(.*)",
             "dest": "/public/$1/$2"
+        },
+        {
+            "src": "/favicon.ico",
+            "dest": "/public/favicon.ico"
+        },
+        {
+            "src": "/robots.txt",
+            "dest": "/public/robots.txt"
         },
         {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
-    ]
+    ],
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "true",
+        "APP_KEY": "base64:kmEqBTgtna88WEdUN08O8lWi9ePlExs81hDCdHoMImE=",
+        "LOG_CHANNEL": "stderr",
+        "DB_CONNECTION": "sqlite",
+        "DB_DATABASE": ":memory:",
+        "SESSION_DRIVER": "cookie",
+        "CACHE_STORE": "array",
+        "FILESYSTEM_DISK": "public",
+        "LARAVEL_STORAGE_PATH": "/tmp",
+        "VIEW_COMPILED_PATH": "/tmp/views",
+        "APP_PACKAGES_CACHE": "/tmp/packages.php",
+        "APP_SERVICES_CACHE": "/tmp/services.php",
+        "APP_CONFIG_CACHE": "/tmp/config.php",
+        "APP_ROUTES_CACHE": "/tmp/routes.php",
+        "APP_EVENTS_CACHE": "/tmp/events.php"
+    }
 }
