@@ -1,7 +1,17 @@
-<?php
+// --- Vercel Compatibility Shim ---
+if (getenv('WEB_KEY')) {
+    putenv('APP_KEY=' . getenv('WEB_KEY'));
+    $_ENV['APP_KEY'] = getenv('WEB_KEY');
+    $_SERVER['APP_KEY'] = getenv('WEB_KEY');
+}
 
-use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
+if (getenv('VERCEL')) {
+    putenv('VIEW_COMPILED_PATH=/tmp/views');
+    if (!is_dir('/tmp/views')) {
+        @mkdir('/tmp/views', 0755, true);
+    }
+}
+// ---------------------------------
 
 define('LARAVEL_START', microtime(true));
 
