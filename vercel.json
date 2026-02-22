@@ -2,7 +2,7 @@
     "version": 2,
     "framework": null,
     "buildCommand": "npm run build",
-    "installCommand": "npm install && curl -sS https://getcomposer.org/installer | php && php composer.phar install --optimize-autoloader --no-dev",
+    "installCommand": "npm install",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.7.1"
