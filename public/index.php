@@ -3,10 +3,8 @@
 use Illuminate\Http\Request;
 
 // --- Vercel Compatibility Shim ---
-if (getenv('WEB_KEY')) {
-    putenv('APP_KEY=' . getenv('WEB_KEY'));
-    $_ENV['APP_KEY'] = getenv('WEB_KEY');
-    $_SERVER['APP_KEY'] = getenv('WEB_KEY');
+if (getenv('APP_KEY')) {
+    putenv('APP_KEY=' . getenv('APP_KEY'));
 }
 
 if (getenv('VERCEL')) {

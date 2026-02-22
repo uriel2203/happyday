@@ -10,8 +10,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 try {
-    // 2. Map Keys
-    $appKey = getenv('APP_KEY') ?: getenv('WEB_KEY') ?: ($_ENV['APP_KEY'] ?? ($_SESSION['APP_KEY'] ?? null));
+    // 2. Map Key
+    $appKey = getenv('APP_KEY') ?: ($_ENV['APP_KEY'] ?? null);
     if ($appKey) {
         putenv("APP_KEY=$appKey");
         $_ENV['APP_KEY'] = $appKey;
