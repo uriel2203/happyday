@@ -228,17 +228,52 @@
             valImg.classList.add('w-72', 'max-w-full', 'md:w-96');
             noBtn.style.display = 'none';
             yesBtn.classList.add('hidden');
-            for (let i = 0; i < 40; i++) {
+            // Explosion effect
+            for (let i = 0; i < 150; i++) {
                 const h = document.createElement('div');
-                h.innerHTML = Math.random() > 0.5 ? '💖' : '💕';
+                h.innerHTML = ['💖', '💕', '💗', '💓', '💞'][Math.floor(Math.random() * 5)];
                 h.style.position = 'fixed';
-                h.style.left = window.innerWidth / 2 + 'px';
-                h.style.top = window.innerHeight / 2 + 'px';
-                h.style.fontSize = Math.random() * 2 + 1.5 + 'rem';
+                h.style.left = '50%';
+                h.style.top = '50%';
+                h.style.fontSize = Math.random() * 2 + 1 + 'rem';
                 h.style.zIndex = '200';
+                h.style.pointerEvents = 'none';
                 document.body.appendChild(h);
-                gsap.to(h, { x: (Math.random() - 0.5) * window.innerWidth * 0.8, y: (Math.random() - 0.5) * window.innerHeight * 0.8, opacity: 0, rotation: Math.random() * 360, scale: Math.random() * 2 + 1, duration: 2 + Math.random() * 2, ease: "power3.out", onComplete: () => h.remove() });
+                gsap.to(h, {
+                    x: (Math.random() - 0.5) * window.innerWidth * 1.5,
+                    y: (Math.random() - 0.5) * window.innerHeight * 1.5,
+                    opacity: 0,
+                    rotation: Math.random() * 720,
+                    scale: Math.random() * 3 + 1,
+                    duration: 3 + Math.random() * 2,
+                    ease: "power4.out",
+                    onComplete: () => h.remove()
+                });
             }
+
+            // Continuous Flood for 4 seconds
+            const floodInterval = setInterval(() => {
+                for (let i = 0; i < 8; i++) {
+                    const h = document.createElement('div');
+                    h.innerHTML = ['💖', '💕', '💗', '💓', '💞'][Math.floor(Math.random() * 5)];
+                    h.style.position = 'fixed';
+                    h.style.left = Math.random() * 100 + 'vw';
+                    h.style.top = window.innerHeight + 50 + 'px';
+                    h.style.fontSize = Math.random() * 2 + 1 + 'rem';
+                    h.style.zIndex = '200';
+                    h.style.pointerEvents = 'none';
+                    document.body.appendChild(h);
+                    gsap.to(h, {
+                        y: -100,
+                        x: "+=" + (Math.random() - 0.5) * 200,
+                        rotation: Math.random() * 360,
+                        duration: 3 + Math.random() * 2,
+                        ease: "none",
+                        onComplete: () => h.remove()
+                    });
+                }
+            }, 100);
+            setTimeout(() => clearInterval(floodInterval), 4000);
         });
 
         const heartContainer = document.getElementById('heart-container');
