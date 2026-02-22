@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Artisan Shim for Static HappyDay Project
+ * 
+ * Since this project was converted to a static Vite architecture 
+ * for Vercel compatibility, 'php artisan serve' is no longer 
+ * the standard command.
+ * 
+ * This shim redirects you to the new standard: 'npm run dev'
+ */
+
+echo "\n🚀 HappyDay: Redirecting to Vite Dev Server...\n";
+echo "Note: Using 'npm run dev' is the new recommended way.\n\n";
+
+// Execute the npm command
+passthru('npm run dev');
